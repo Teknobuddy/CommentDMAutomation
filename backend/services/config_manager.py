@@ -1,7 +1,9 @@
 import json
 import os
 
-CONFIG_FILE = "reels_config.json"
+# Use Railway volume if available, otherwise local file
+DATA_DIR = os.getenv("RAILWAY_VOLUME_MOUNT_PATH", ".")
+CONFIG_FILE = os.path.join(DATA_DIR, "reels_config.json")
 
 def _load_config():
     if not os.path.exists(CONFIG_FILE):
