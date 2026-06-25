@@ -10,6 +10,7 @@ class ReelConfigUpdate(BaseModel):
     dm_message: str
     comment_reply: str
     active: bool
+    delay_seconds: int = 0
 
 class TestDMRequest(BaseModel):
     comment_id: str
