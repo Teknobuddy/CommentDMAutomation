@@ -1,11 +1,10 @@
 import asyncio
 from fastapi import APIRouter, Request, Query, HTTPException
 from config import VERIFY_TOKEN
-from services.instagram import send_dm, reply_to_comment
+from services.instagram import send_dm, send_dm_with_follow_button, reply_to_comment
 from services.config_manager import get_reel_config
 
 router = APIRouter(prefix="/webhook", tags=["webhook"])
-
 
 @router.get("")
 async def verify_webhook(
@@ -17,22 +16,24 @@ async def verify_webhook(
         return int(hub_challenge)
     raise HTTPException(status_code=403, detail="Verification failed")
 
-
-async def send_after_delay(comment_id: str, dm_message: str, comment_reply: str, delay_seconds: int):
+async def send_after_delay(comment_id: str, dm_message: str, comment_reply: str, delay_seconds: int, show_follow_button: bool):
     if delay_seconds and delay_seconds > 0:
         print(f"⏳ Waiting {delay_seconds}s before sending DM/reply for comment {comment_id}")
         await asyncio.sleep(delay_seconds)
 
     if dm_message:
-        print(f"📤 Sending DM: {dm_message}")
-        dm_response = send_dm(comment_id, dm_message)
+        if show_follow_button:
+            print(f"📤 Sending DM with follow button: {dm_message}")
+            dm_response = send_dm_with_follow_button(comment_id, dm_message)
+        else:
+            print(f"📤 Sending plain DM: {dm_message}")
+            dm_response = send_dm(comment_id, dm_message)
         print(f"📥 DM Response: {dm_response}")
 
     if comment_reply:
         print(f"💬 Replying to comment: {comment_reply}")
         reply_response = reply_to_comment(comment_id, comment_reply)
         print(f"💬 Reply Response: {reply_response}")
-
 
 @router.post("")
 async def handle_webhook(request: Request):
@@ -49,7 +50,6 @@ async def handle_webhook(request: Request):
     for entry in body.get("entry", []):
         for change in entry.get("changes", []):
             print(f"Change field: {change.get('field')}")
-
             if change.get("field") == "comments":
                 value = change.get("value", {})
                 comment_id = value.get("id")
@@ -62,7 +62,6 @@ async def handle_webhook(request: Request):
                 print(f"📝 Media ID: {media_id}")
                 print(f"👤 Commenter ID: {commenter_id}")
 
-                # Skip if this is your own comment (bot replying to itself)
                 if commenter_id == entry.get("id"):
                     print("⏭️ Skipping - this is our own comment")
                     continue
@@ -78,20 +77,23 @@ async def handle_webhook(request: Request):
                     print("❌ Config not active")
                     continue
 
-                trigger = config.get("trigger_keyword", "").lower()
-                print(f"🔑 Trigger keyword: '{trigger}'")
-                print(f"🔍 Checking if '{trigger}' in '{comment_text}'")
+                triggers = config.get("trigger_keywords", [])
+                triggers = [t.lower().strip() for t in triggers if t.strip()]
+                print(f"🔑 Trigger keywords: {triggers}")
+                print(f"🔍 Checking if any of {triggers} are in '{comment_text}'")
 
-                if trigger and trigger in comment_text:
-                    print("✅ TRIGGER MATCHED!")
+                matched = next((t for t in triggers if t in comment_text), None)
+
+                if matched:
+                    print(f"✅ TRIGGER MATCHED: '{matched}'")
                     dm_message = config.get("dm_message", "")
                     comment_reply = config.get("comment_reply", "")
                     delay_seconds = config.get("delay_seconds", 0)
-
+                    show_follow_button = config.get("show_follow_button", True)
                     asyncio.create_task(
-                        send_after_delay(comment_id, dm_message, comment_reply, delay_seconds)
+                        send_after_delay(comment_id, dm_message, comment_reply, delay_seconds, show_follow_button)
                     )
                 else:
-                    print(f"❌ Trigger NOT matched. '{trigger}' not in '{comment_text}'")
+                    print(f"❌ No trigger matched in '{comment_text}'")
 
     return {"status": "ok"}
