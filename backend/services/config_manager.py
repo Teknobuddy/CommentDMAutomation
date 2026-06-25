@@ -39,3 +39,31 @@ def update_reel_config(media_id: str, new_config: dict):
     config["reels"][media_id] = new_config
     _save_config(config)
     return new_config
+
+TOKEN_FILE = os.path.join(DATA_DIR, "ig_token.json")
+
+def get_current_token():
+    """
+    Returns the most recently saved Instagram access token.
+    Falls back to the environment variable if no saved token exists yet.
+    """
+    if os.path.exists(TOKEN_FILE):
+        with open(TOKEN_FILE, "r") as f:
+            data = json.load(f)
+            return data.get("access_token")
+    from config import INSTAGRAM_ACCESS_TOKEN
+    return INSTAGRAM_ACCESS_TOKEN
+
+def save_new_token(access_token: str, expires_in: int):
+    """
+    Saves a refreshed access token, along with the time it was saved
+    and when it will expire, to the persistent volume.
+    """
+    import time
+    data = {
+        "access_token": access_token,
+        "saved_at": time.time(),
+        "expires_in": expires_in
+    }
+    with open(TOKEN_FILE, "w") as f:
+        json.dump(data, f, indent=2)
