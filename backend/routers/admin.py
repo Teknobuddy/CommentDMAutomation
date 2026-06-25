@@ -6,11 +6,12 @@ from services.config_manager import get_all_configs, update_reel_config, get_ree
 router = APIRouter(prefix="/api", tags=["admin"])
 
 class ReelConfigUpdate(BaseModel):
-    trigger_keyword: str
+    trigger_keywords: list[str]
     dm_message: str
     comment_reply: str
     active: bool
     delay_seconds: int = 0
+    show_follow_button: bool = True
 
 class TestDMRequest(BaseModel):
     comment_id: str
