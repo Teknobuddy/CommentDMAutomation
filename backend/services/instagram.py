@@ -29,15 +29,24 @@ def get_account_media():
         "fields": "id,media_type,media_url,thumbnail_url,permalink,caption",
         "limit": 100
     }
-    
-    response = requests.get(url, params=params)
-    data = response.json()
-    
-    if "error" in data:
-        print(f"Instagram API Error: {data['error']}")
-        return []
-    
-    media_items = data.get("data", [])
-    
-    # Return all media items (reels, posts, etc.)
-    return media_items
+
+    all_media = []
+
+    while url:
+        response = requests.get(url, params=params)
+        data = response.json()
+
+        if "error" in data:
+            print(f"Instagram API Error: {data['error']}")
+            break
+
+        all_media.extend(data.get("data", []))
+
+        next_url = data.get("paging", {}).get("next")
+        if next_url:
+            url = next_url
+            params = {}  # next_url already includes all needed query params
+        else:
+            url = None
+
+    return all_media
