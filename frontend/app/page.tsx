@@ -10,6 +10,7 @@ interface ReelConfig {
   dm_message: string
   comment_reply: string
   active: boolean
+  delay_seconds: number
 }
 
 interface Reel {
@@ -31,11 +32,12 @@ export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
   const [editingReel, setEditingReel] = useState<Reel | null>(null)
-  const [formData, setFormData] = useState<ReelConfig>({
+ const [formData, setFormData] = useState<ReelConfig>({
     trigger_keyword: '',
     dm_message: '',
     comment_reply: '',
-    active: true
+    active: true,
+    delay_seconds: 0
   })
 
   useEffect(() => {
@@ -228,6 +230,19 @@ export default function Dashboard() {
                       className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 transition h-28 resize-none"
                       placeholder="Public reply to the comment"
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-white font-semibold mb-2 text-sm uppercase tracking-wide">Delay (seconds)</label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={formData.delay_seconds}
+                      onChange={(e) => setFormData({...formData, delay_seconds: parseInt(e.target.value) || 0})}
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/50 transition"
+                      placeholder="0"
+                    />
+                    <p className="text-white/50 text-xs mt-1.5">How long to wait before sending the reply and DM (0 = instant)</p>
                   </div>
 
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
