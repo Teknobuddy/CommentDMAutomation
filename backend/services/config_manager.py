@@ -13,7 +13,7 @@ def _load_config():
                 "trigger_keyword": "info",
                 "dm_message": "Thanks for your interest! Check your DMs.",
                 "comment_reply": "Sent you a DM!",
-                "active": True
+                "active": True,
                 "delay_seconds": 0,
             }
         }
