@@ -14,6 +14,7 @@ def _load_config():
                 "dm_message": "Thanks for your interest! Check your DMs.",
                 "comment_reply": "Sent you a DM!",
                 "active": True
+                "delay_seconds": 0,
             }
         }
         _save_config(default_config)
