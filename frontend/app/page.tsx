@@ -234,11 +234,14 @@ export default function Dashboard() {
 
                   <div>
                     <label className="block text-white font-semibold mb-2 text-sm uppercase tracking-wide">Delay (seconds)</label>
-                    <input
+                   <input
                       type="number"
                       min={0}
-                      value={formData.delay_seconds}
-                      onChange={(e) => setFormData({...formData, delay_seconds: parseInt(e.target.value) || 0})}
+                      value={formData.delay_seconds === 0 ? '' : formData.delay_seconds}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setFormData({...formData, delay_seconds: val === '' ? 0 : parseInt(val) || 0})
+                      }}
                       className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/50 transition"
                       placeholder="0"
                     />
