@@ -15,6 +15,41 @@ def send_dm(comment_id: str, message: str):
     response = requests.post(url, json=payload, params=params)
     return response.json()
 
+def send_dm_with_follow_button(comment_id: str, message: str, profile_url: str = "https://www.instagram.com/tekno_buddy"):
+    """
+    Sends a DM with the given text plus a tappable 'Follow me' button
+    that opens the creator's Instagram profile.
+    """
+    url = f"{GRAPH_API_URL}/me/messages"
+    payload = {
+        "recipient": {"comment_id": comment_id},
+        "message": {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": message[:80] if message else "Thanks for your interest!",
+                            "subtitle": message if len(message) > 80 else None,
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": profile_url,
+                                    "title": "Follow me"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    }
+    params = {"access_token": get_current_token()}
+
+    response = requests.post(url, json=payload, params=params)
+    return response.json()
+
 def reply_to_comment(comment_id: str, message: str):
     url = f"{GRAPH_API_URL}/{comment_id}/replies"
     payload = {"message": message}
