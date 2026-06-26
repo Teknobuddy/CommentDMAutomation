@@ -27,6 +27,7 @@ interface Stats {
   total_reels: number
   configured: number
   using_default: number
+  active_count: number
 }
 
 const THEMES = {
@@ -224,9 +225,9 @@ export default function Dashboard() {
               <div style={{ fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 500, lineHeight: 1 }}>{stats.configured}</div>
               <div style={{ fontSize: '12px', color: t.muted, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '6px' }}>Configured</div>
             </div>
-            <div style={{ flex: 1, background: t.surface, padding: '20px 24px' }}>
-              <div style={{ fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 500, lineHeight: 1 }}>{stats.using_default}</div>
-              <div style={{ fontSize: '12px', color: t.muted, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '6px' }}>Using default (inactive)</div>
+           <div style={{ flex: 1, background: t.surface, padding: '20px 24px' }}>
+              <div style={{ fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 500, lineHeight: 1 }}>{stats.active_count}</div>
+              <div style={{ fontSize: '12px', color: t.muted, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '6px' }}>Active</div>
             </div>
           </div>
         )}
