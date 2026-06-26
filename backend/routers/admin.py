@@ -65,18 +65,23 @@ async def get_stats():
     total = len(media_items)
     configured = 0
     using_default = 0
+    active_count = 0
     
     for item in media_items:
         media_id = item["id"]
+        config = configs["reels"].get(media_id, configs["default"])
         if media_id in configs["reels"]:
             configured += 1
         else:
             using_default += 1
+        if config.get("active"):
+            active_count += 1
     
     return {
         "total_reels": total,
         "configured": configured,
-        "using_default": using_default
+        "using_default": using_default,
+        "active_count": active_count
     }
 
 @router.post("/test/send-dm")
