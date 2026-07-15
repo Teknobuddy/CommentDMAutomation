@@ -13,6 +13,9 @@ interface ReelConfig {
   active: boolean
   delay_seconds: number
   show_follow_button: boolean
+  reply_to_all: boolean
+  reply_to_all_dm_message: string
+  reply_to_all_comment_reply: string
 }
 
 interface Reel {
@@ -59,7 +62,10 @@ export default function Dashboard() {
     comment_reply: '',
     active: true,
     delay_seconds: 0,
-    show_follow_button: true
+    show_follow_button: true,
+    reply_to_all: false,
+    reply_to_all_dm_message: '',
+    reply_to_all_comment_reply: ''
   })
 
   const t = THEMES[theme]
@@ -99,7 +105,10 @@ export default function Dashboard() {
       comment_reply: reel.config.comment_reply || '',
       active: reel.config.active ?? false,
       delay_seconds: reel.config.delay_seconds || 0,
-      show_follow_button: reel.config.show_follow_button ?? true
+      show_follow_button: reel.config.show_follow_button ?? true,
+      reply_to_all: reel.config.reply_to_all ?? false,
+      reply_to_all_dm_message: reel.config.reply_to_all_dm_message || '',
+      reply_to_all_comment_reply: reel.config.reply_to_all_comment_reply || ''
     })
     setKeywordInput('')
   }
@@ -384,7 +393,7 @@ export default function Dashboard() {
                 <span style={{ fontSize: '14px', fontWeight: 500 }}>Enable automation for this reel</span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', background: t.bg, borderRadius: '8px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', background: t.bg, borderRadius: '8px', marginBottom: '12px' }}>
                 <input
                   type="checkbox"
                   checked={formData.show_follow_button}
@@ -393,6 +402,44 @@ export default function Dashboard() {
                 />
                 <span style={{ fontSize: '14px', fontWeight: 500 }}>Include a "Follow me" button in the DM</span>
               </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', background: t.bg, borderRadius: '8px', marginBottom: formData.reply_to_all ? '12px' : '24px' }}>
+                <input
+                  type="checkbox"
+                  checked={formData.reply_to_all}
+                  onChange={(e) => setFormData({ ...formData, reply_to_all: e.target.checked })}
+                  style={{ width: '18px', height: '18px', accentColor: t.accent }}
+                />
+                <div>
+                  <span style={{ fontSize: '14px', fontWeight: 500 }}>Reply to ALL comments (ignore keyword)</span>
+                  <div style={{ fontSize: '12px', color: t.muted, marginTop: '2px' }}>When on, every comment triggers a DM + reply regardless of what they typed</div>
+                </div>
+              </div>
+
+              {formData.reply_to_all && (
+                <div style={{ marginBottom: '24px', padding: '16px', background: t.surface2, borderRadius: '10px', border: `1px solid ${t.line}` }}>
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.inkSoft, marginBottom: '8px' }}>DM for all commenters</label>
+                    <textarea
+                      value={formData.reply_to_all_dm_message}
+                      onChange={(e) => setFormData({ ...formData, reply_to_all_dm_message: e.target.value })}
+                      rows={3}
+                      placeholder="Message to send to every commenter"
+                      style={{ width: '100%', border: `1px solid ${t.line}`, borderRadius: '8px', padding: '11px 13px', fontFamily: 'Inter, sans-serif', fontSize: '14px', background: t.bg, color: t.ink, resize: 'none', boxSizing: 'border-box' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.inkSoft, marginBottom: '8px' }}>Public reply for all commenters</label>
+                    <textarea
+                      value={formData.reply_to_all_comment_reply}
+                      onChange={(e) => setFormData({ ...formData, reply_to_all_comment_reply: e.target.value })}
+                      rows={2}
+                      placeholder="Public reply to post on every comment"
+                      style={{ width: '100%', border: `1px solid ${t.line}`, borderRadius: '8px', padding: '11px 13px', fontFamily: 'Inter, sans-serif', fontSize: '14px', background: t.bg, color: t.ink, resize: 'none', boxSizing: 'border-box' }}
+                    />
+                  </div>
+                </div>
+              )}
 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <div onClick={handleSave} style={{ flex: 1, padding: '13px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textAlign: 'center', cursor: 'pointer', background: t.ink, color: t.bg, border: `1px solid ${t.ink}` }}>
