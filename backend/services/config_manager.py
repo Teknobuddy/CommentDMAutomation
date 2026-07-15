@@ -10,13 +10,16 @@ def _load_config():
         default_config = {
             "reels": {},
             "default": {
-                "trigger_keywords": ["info"],
-                "dm_message": "Thanks for your interest! Check your DMs.",
-                "comment_reply": "Sent you a DM!",
-                "active": False,
-                "delay_seconds": 0,
-                "show_follow_button": True,
-            }
+    "trigger_keywords": ["info"],
+    "dm_message": "Thanks for your interest! Check your DMs.",
+    "comment_reply": "Sent you a DM!",
+    "active": False,
+    "delay_seconds": 0,
+    "show_follow_button": True,
+    "reply_to_all": False,
+    "reply_to_all_dm_message": "",
+    "reply_to_all_comment_reply": "",
+}
         }
         _save_config(default_config)
         return default_config
