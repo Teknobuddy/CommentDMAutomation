@@ -77,23 +77,35 @@ async def handle_webhook(request: Request):
                     print("❌ Config not active")
                     continue
 
-                triggers = config.get("trigger_keywords", [])
-                triggers = [t.lower().strip() for t in triggers if t.strip()]
-                print(f"🔑 Trigger keywords: {triggers}")
-                print(f"🔍 Checking if any of {triggers} are in '{comment_text}'")
+                reply_to_all = config.get("reply_to_all", False)
 
-                matched = next((t for t in triggers if t in comment_text), None)
-
-                if matched:
-                    print(f"✅ TRIGGER MATCHED: '{matched}'")
-                    dm_message = config.get("dm_message", "")
-                    comment_reply = config.get("comment_reply", "")
+                if reply_to_all:
+                    print(f"📣 Reply-to-all mode ON — firing for every comment")
+                    dm_message = config.get("reply_to_all_dm_message", "")
+                    comment_reply = config.get("reply_to_all_comment_reply", "")
                     delay_seconds = config.get("delay_seconds", 0)
                     show_follow_button = config.get("show_follow_button", True)
                     asyncio.create_task(
                         send_after_delay(comment_id, dm_message, comment_reply, delay_seconds, show_follow_button)
                     )
                 else:
-                    print(f"❌ No trigger matched in '{comment_text}'")
+                    triggers = config.get("trigger_keywords", [])
+                    triggers = [t.lower().strip() for t in triggers if t.strip()]
+                    print(f"🔑 Trigger keywords: {triggers}")
+                    print(f"🔍 Checking if any of {triggers} are in '{comment_text}'")
+
+                    matched = next((t for t in triggers if t in comment_text), None)
+
+                    if matched:
+                        print(f"✅ TRIGGER MATCHED: '{matched}'")
+                        dm_message = config.get("dm_message", "")
+                        comment_reply = config.get("comment_reply", "")
+                        delay_seconds = config.get("delay_seconds", 0)
+                        show_follow_button = config.get("show_follow_button", True)
+                        asyncio.create_task(
+                            send_after_delay(comment_id, dm_message, comment_reply, delay_seconds, show_follow_button)
+                        )
+                    else:
+                        print(f"❌ No trigger matched in '{comment_text}'")
 
     return {"status": "ok"}
