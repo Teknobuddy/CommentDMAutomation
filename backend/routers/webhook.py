@@ -81,8 +81,8 @@ async def handle_webhook(request: Request):
 
                 if reply_to_all:
                     print(f"📣 Reply-to-all mode ON — firing for every comment")
-                    dm_message = config.get("reply_to_all_dm_message", "")
-                    comment_reply = config.get("reply_to_all_comment_reply", "")
+                    dm_message = config.get("dm_message", "")
+                    comment_reply = config.get("comment_reply", "")
                     delay_seconds = config.get("delay_seconds", 0)
                     show_follow_button = config.get("show_follow_button", True)
                     asyncio.create_task(
