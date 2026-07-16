@@ -13,8 +13,6 @@ class ReelConfigUpdate(BaseModel):
     delay_seconds: int = 0
     show_follow_button: bool = True
     reply_to_all: bool = False
-    reply_to_all_dm_message: str = ""
-    reply_to_all_comment_reply: str = ""
 
 class TestDMRequest(BaseModel):
     comment_id: str
