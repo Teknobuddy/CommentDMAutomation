@@ -17,8 +17,6 @@ def _load_config():
     "delay_seconds": 0,
     "show_follow_button": True,
     "reply_to_all": False,
-    "reply_to_all_dm_message": "",
-    "reply_to_all_comment_reply": "",
 }
         }
         _save_config(default_config)
