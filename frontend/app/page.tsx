@@ -154,13 +154,16 @@ export default function Dashboard() {
     e.stopPropagation()
     setTogglingId(reel.id)
     const updated: ReelConfig = {
-      trigger_keywords: reel.config.trigger_keywords || [],
-      dm_message: reel.config.dm_message || '',
-      comment_reply: reel.config.comment_reply || '',
-      active: !reel.config.active,
-      delay_seconds: reel.config.delay_seconds || 0,
-      show_follow_button: reel.config.show_follow_button ?? true
-    }
+  trigger_keywords: reel.config.trigger_keywords || [],
+  dm_message: reel.config.dm_message || '',
+  comment_reply: reel.config.comment_reply || '',
+  active: !reel.config.active,
+  delay_seconds: reel.config.delay_seconds || 0,
+  show_follow_button: reel.config.show_follow_button ?? true,
+  reply_to_all: reel.config.reply_to_all ?? false,
+  reply_to_all_dm_message: reel.config.reply_to_all_dm_message || '',
+  reply_to_all_comment_reply: reel.config.reply_to_all_comment_reply || ''
+}
     try {
       await axios.put(`${API_URL}/api/reels/${reel.id}`, updated)
       await fetchData()
