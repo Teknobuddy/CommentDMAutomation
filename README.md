@@ -1,275 +1,247 @@
 # 🚀 Instagram Comment-to-DM Automation
 
-<div align="center">
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/tekno_buddy)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
 
-![Instagram Automation](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+**Turn every comment into a conversation. Automatically. 💬✨**
 
-**Automate your Instagram engagement like a pro! 💬✨**
+Reply to comments and send DMs instantly — powered by Meta's official Instagram API. No bots, no scraping, no account risk.
 
-Turn comments into conversations instantly with smart keyword-triggered DMs.
-
-[🎯 Features](#-features) • [🛠️ Setup](#️-quick-setup) • [🚀 Deploy](#-deployment) • [📸 Demo](#-demo)
-
-</div>
+[🎯 Features](#-features) • [⚙️ How It Works](#%EF%B8%8F-how-it-works) • [🛠️ Setup](#%EF%B8%8F-setup) • [🚀 Deploy](#-deployment) • [🔧 Configuration](#-configuration) • [❓ Troubleshooting](#-troubleshooting)
 
 ---
 
 ## 🎯 Features
 
 ✨ **Smart Automation**
-- 🔍 Keyword detection in comments
-- 💌 Instant DM responses
-- 💬 Public comment replies
-- 🎬 Per-reel customization
+- 🔍 Multiple trigger keywords per reel — any one word fires the automation
+- 💌 Instant DM to the commenter
+- 💬 Public reply posted on the comment
+- ⏱️ Custom delay before sending — so it doesn't feel robotic
+- 👤 Optional **"Follow me" button** right inside the DM
+
+🆕 **Reply to ALL Comments Mode**
+- 🔁 Toggle on and every single comment triggers a DM + reply — no keyword needed
+- 🎯 Perfect for giveaways, engagement campaigns, and launch posts
+- ✅ Reuses your existing DM message and comment reply — no duplicate setup
 
 🎨 **Beautiful Dashboard**
-- 📊 Real-time stats
-- 🖼️ Visual reel grid
-- ⚡ One-click configuration
-- 🌈 Stunning glassmorphism UI
+- 📊 Live stats — total reels, configured, and actively running
+- 🖼️ Visual reel grid with thumbnails
+- ⚡ Quick on/off toggle directly on each reel card
+- 🌙 Light/dark theme toggle, remembered per browser
+- 🔢 Live character counter on DM field (warns before Instagram's 1,000-char limit)
 
 🔒 **Secure & Reliable**
-- 🔐 Webhook verification
-- 🛡️ Environment-based secrets
-- 📝 JSON-based storage (no DB needed!)
-- ☁️ Production-ready deployment
+- 🔐 Meta's official Instagram Graph API — not a third-party bot
+- 🔄 Automatic token refresh every 4 days — never manually regenerate again
+- 💾 Persistent volume storage — settings survive every deploy and restart
+- 🆕 New reels default to **inactive** — nothing fires until you turn it on
 
 ---
 
-## 🛠️ Quick Setup
+## ⚙️ How It Works
 
-### 📋 Prerequisites
-
-- Instagram Business Account
-- Meta Developer App
-- Python 3.8+
-- Node.js 18+
-
-### 🔑 Get Your Credentials
-
-1. **VERIFY_TOKEN**: Any random string (e.g., `my_secret_token_123`)
-2. **INSTAGRAM_ACCESS_TOKEN**: 
-   - Go to [Meta App Dashboard](https://developers.facebook.com/apps/)
-   - Generate token (starts with `IGAA`)
-   - Permissions needed: `instagram_business_basic`, `instagram_business_manage_messages`, `instagram_business_manage_comments`
-3. **IG_BUSINESS_ACCOUNT_ID**: 
-   - Found in Meta Business Suite → Instagram Settings
-   - Long number like `178414330845.....`
+1. 👤 Someone comments on your Instagram reel
+2. ⚡ Instagram sends an instant webhook to your backend
+3. 🔍 Backend checks: is **Reply to ALL** on?
+   - **Yes →** fires DM + reply to every commenter, no keyword needed
+   - **No →** checks if comment contains your trigger keyword
+4. 💌 Sends a private DM to the commenter
+5. 💬 Posts a public reply on their comment
+6. 🎉 Done — all within seconds
 
 ---
 
-## 💻 Local Development
+## 🛠️ Setup
 
-### Backend Setup
+### What you'll need
 
-```bash
-cd backend
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env with your credentials
-uvicorn main:app --reload
+- Instagram Business or Creator account
+- Facebook account (to access Meta Developer tools)
+- GitHub account — [github.com](https://github.com)
+- Railway account — [railway.com](https://railway.com)
+- Vercel account — [vercel.com](https://vercel.com)
+
+### 🔑 Credentials you'll generate
+
+| Credential | Where to get it |
+|---|---|
+| `VERIFY_TOKEN` | Make up any string yourself |
+| `INSTAGRAM_ACCESS_TOKEN` | Meta app → API setup with Instagram login → Generate token |
+| `IG_BUSINESS_ACCOUNT_ID` | Meta app → API setup page (long number) |
+
+### Required Instagram permissions
+
+Make sure to add the `instagram_business_` versions — the older ones without that prefix won't work:
+
+- `instagram_business_basic`
+- `instagram_business_manage_comments`
+- `instagram_business_manage_messages`
+
+---
+
+## 🚀 Deployment
+
+### Step 1 — Fork this repo
+
+Click **Fork** (top right) to get your own copy. You'll make all edits in your fork.
+
+### Step 2 — Deploy backend to Railway
+
+1. Go to [railway.com](https://railway.com) and sign up with GitHub
+2. New Project → Deploy from GitHub repo → select your fork
+3. Set **Root Directory** to `/backend` under Settings
+4. Add 3 environment variables under the Variables tab:
+
+```
+VERIFY_TOKEN=any_phrase_you_choose
+INSTAGRAM_ACCESS_TOKEN=your_token_from_meta
+IG_BUSINESS_ACCOUNT_ID=your_instagram_business_id
 ```
 
-🎉 Backend running at `http://localhost:8000`
+5. **Attach a persistent volume** — on the project canvas click **+ Add → Volume**, select your backend service, mount path: `/data`, then click Deploy
+   > ⚠️ Do not skip this. Without it, all your reel settings reset on every deploy.
 
-### Frontend Setup
+6. Go to Settings → Networking and copy your public Railway URL
 
-```bash
-cd frontend
-npm install
-cp .env.local.example .env.local
-# Set NEXT_PUBLIC_API_URL=http://localhost:8000
-npm run dev
+### Step 3 — Deploy frontend to Vercel
+
+1. Go to [vercel.com](https://vercel.com) and sign up with GitHub
+2. New Project → import your fork
+3. Set **Root Directory** to `frontend`
+4. Add one environment variable:
+
+```
+NEXT_PUBLIC_API_URL=https://your-railway-url.up.railway.app
 ```
 
-🎉 Frontend running at `http://localhost:3000`
+   > ⚠️ No trailing slash. Set this in the Vercel dashboard UI — not inside `vercel.json`.
 
----
+5. Deploy and copy your Vercel URL
 
-## 🚀 One-Click Deployment
+### Step 4 — Connect the webhook
 
-### Step 1: Deploy Backend to Railway
+1. Go to your Meta app → Use cases → API setup → Configure webhooks
+2. **Callback URL:** `https://your-railway-url.up.railway.app/webhook`
+3. **Verify token:** same phrase you used for `VERIFY_TOKEN`
+4. Click Verify and Save → subscribe to the **comments** field
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/deploy/balanced-comfort?referralCode=Ysyqwj)
+### Step 5 — Add legal pages
 
-Click the button above and:
-1. Sign in to Railway
-2. Enter these 3 environment variables:
-   - `VERIFY_TOKEN` - Any random string (e.g., `my_secret_123`)
-   - `INSTAGRAM_ACCESS_TOKEN` - Your Instagram token (starts with `IGAA`)
-   - `IG_BUSINESS_ACCOUNT_ID` - Your Instagram Business Account ID
-3. Click **Deploy**
-4. **Copy your Railway URL** (e.g., `https://your-app.railway.app`)
+Meta requires these before you can publish. Both are already built into this repo:
 
-### Step 2: Deploy Frontend to Vercel
+- Privacy Policy → `https://your-vercel-url.vercel.app/privacy`
+- Data Deletion → `https://your-vercel-url.vercel.app/data-deletion`
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/TejasAdhiya/CommentDMAutomation&root-directory=frontend&env=NEXT_PUBLIC_API_URL&envDescription=Backend%20API%20URL%20from%20Railway%20(without%20trailing%20slash)&envLink=https://github.com/TejasAdhiya/CommentDMAutomation&project-name=instagram-dm-automation&demo-title=Instagram%20DM%20Automation&demo-description=Automate%20Instagram%20engagement%20with%20smart%20keyword-triggered%20DMs)
+Add them in Meta app → App Settings → Basic.
 
-Click the button above and:
-1. Sign in to Vercel
-2. Enter environment variable:
-   - `NEXT_PUBLIC_API_URL` - Your Railway URL from Step 1 (e.g., `https://your-app.railway.app`)
-   - ⚠️ **Important**: No trailing slash!
-3. Click **Deploy**
-4. **Copy your Vercel URL** (e.g., `https://your-app.vercel.app`)
+### Step 6 — Publish your Meta app
 
-### Step 3: Configure Instagram Webhook
+> ⚠️ This step is required. Meta's webhook test button works on unpublished apps — but real Instagram comments won't trigger anything until you publish.
 
-1. Go to [Meta App Dashboard](https://developers.facebook.com/apps/)
-2. Select your app → Webhooks
-3. Configure Instagram webhook:
-   - **Callback URL**: `https://your-railway-url.railway.app/webhook`
-   - **Verify Token**: Your `VERIFY_TOKEN` from Step 1
-4. Click **Verify and Save**
-5. Subscribe to **comments** field only
-6. Save
+Meta app → Publish page → click **Publish**.
 
-### Step 4: Test Your Setup! 🎉
+### Step 7 — Test it 🎉
 
-1. Open your Vercel URL
-2. Click on a reel to configure it
-3. Set trigger keyword, DM message, and comment reply
-4. Comment on your Instagram reel with the trigger keyword
-5. Check if you receive a DM!
-
----
-
-## 📝 Manual Deployment
-
-<details>
-<summary>Click to expand manual deployment instructions</summary>
-
-### 🚂 Railway (Backend)
-
-1. Push code to GitHub
-2. Create new project on [Railway](https://railway.app)
-3. Connect your repo
-4. Set root directory: `backend`
-5. Add environment variables:
-   ```
-   VERIFY_TOKEN=your_token
-   INSTAGRAM_ACCESS_TOKEN=your_ig_token
-   IG_BUSINESS_ACCOUNT_ID=your_account_id
-   ```
-6. Deploy! 🎊
-
-### ▲ Vercel (Frontend)
-
-1. Create new project on [Vercel](https://vercel.com)
-2. Import your GitHub repo
-3. Set root directory: `frontend`
-4. Add environment variable:
-   ```
-   NEXT_PUBLIC_API_URL=https://your-railway-url.railway.app
-   ```
-5. Deploy! 🎊
-
-</details>
-
-### 🔗 Configure Webhook
-
-1. Go to Meta App Dashboard → Webhooks
-2. Callback URL: `https://your-railway-url.railway.app/webhook`
-3. Verify Token: Your `VERIFY_TOKEN`
-4. Subscribe to `comments` field
-5. Save! ✅
-
----
-
-## 📸 Demo
-
-### Dashboard View
-Beautiful, responsive dashboard to manage all your reels in one place.
-
-### How It Works
-
-1. 👤 User comments on your reel with trigger keyword (e.g., "info")
-2. ⚡ Webhook instantly notifies your server
-3. 💌 System sends personalized DM
-4. 💬 Posts public reply on comment
-5. 🎉 User gets instant response!
-
----
-
-## 🎨 Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| 🐍 **FastAPI** | Lightning-fast Python backend |
-| ⚛️ **Next.js 14** | Modern React framework |
-| 📘 **TypeScript** | Type-safe frontend |
-| 🎨 **Tailwind CSS** | Beautiful, responsive UI |
-| 📦 **JSON Storage** | Simple, no-database solution |
-| 🚂 **Railway** | Backend hosting |
-| ▲ **Vercel** | Frontend hosting |
-
----
-
-## 📖 Usage Guide
-
-### Step 1: Open Dashboard
-Navigate to your deployed frontend URL
-
-### Step 2: View Your Reels
-All your Instagram reels appear in a beautiful grid
-
-### Step 3: Configure Automation
-Click any reel to set:
-- 🔑 **Trigger Keyword**: Word that activates automation
-- 💌 **DM Message**: Private message sent to user
-- 💬 **Comment Reply**: Public response on their comment
-- ✅ **Active/Inactive**: Toggle automation on/off
-
-### Step 4: Save & Test
-Comment on your reel with the trigger keyword and watch the magic happen! ✨
+1. Open your Vercel dashboard URL
+2. Click a reel → set a trigger keyword, DM message, comment reply
+3. Enable the reel → Save
+4. Comment the trigger word from a second account
+5. Watch the DM and public reply fire automatically
 
 ---
 
 ## 🔧 Configuration
 
-### Default Settings
-All reels start with default configuration:
-```json
-{
-  "trigger_keyword": "info",
-  "dm_message": "Thanks for your interest! Check your DMs.",
-  "comment_reply": "Sent you a DM!",
-  "active": true
-}
-```
+### Per-reel settings
 
-Customize each reel individually through the dashboard!
+| Setting | What it does |
+|---|---|
+| Trigger keywords | Any comment containing one of these words fires the automation |
+| DM message | Private message sent to the commenter |
+| Comment reply | Public reply posted under their comment |
+| Delay (seconds) | How long to wait before sending — 0 = instant |
+| Follow button | Adds a "Follow me" button inside the DM |
+| Enable automation | Master on/off for this reel |
+| Reply to ALL comments | When ON — bypasses keywords, fires on every comment |
+
+### 🆕 Reply to ALL Comments
+
+When this toggle is ON for a reel:
+- Every comment triggers the automation — no keyword match needed
+- Uses the same **DM message** and **Comment reply** fields you've already filled in
+- Ideal for giveaways, high-engagement posts, or launch campaigns
+- Turn it back OFF anytime to return to keyword-only mode
 
 ---
 
-## 🤝 Contributing
+## 🗂️ Tech Stack
 
-Contributions are welcome! Feel free to:
-- 🐛 Report bugs
-- 💡 Suggest features
-- 🔧 Submit pull requests
+| Technology | Purpose |
+|---|---|
+| 🐍 **FastAPI** | Python backend |
+| ⚛️ **Next.js + TypeScript** | Frontend dashboard |
+| 💅 **Inline React styles** | UI styling (no Tailwind) |
+| 📦 **JSON on Railway volume** | Storage — no database needed |
+| 🚂 **Railway** | Backend hosting |
+| ▲ **Vercel** | Frontend hosting |
+| 📸 **Meta Graph API** | Official Instagram connection |
+
+---
+
+## ❓ Troubleshooting
+
+**Nothing happens when I comment the trigger word**
+→ App is probably not published. Go to Meta app → Publish page → Publish. The test button works on unpublished apps but real comments don't fire until it's live.
+
+**Dashboard shows 0 reels**
+→ `NEXT_PUBLIC_API_URL` on Vercel doesn't match your Railway URL exactly. Check for typos and remove any trailing slash.
+
+**Settings reset after every code deploy**
+→ No persistent volume attached, or not mounted at `/data`. Redo Step 2 above.
+
+**Reply to ALL is ON but nothing fires**
+→ Check that "Enable automation for this reel" is also ON. Both need to be active.
+
+**Reply to ALL fires but DM or reply is blank**
+→ The DM message and comment reply fields in that reel's settings are empty. Fill them in — reply-to-all reuses those same fields.
+
+**Railway deploy failed**
+→ Click the failed deployment → Deploy Logs → scroll to the bottom. Python errors name the exact file and line number.
+
+---
+
+## 💰 Cost
+
+| Service | Cost |
+|---|---|
+| Railway (Hobby plan) | $5 USD / month |
+| Vercel | Free |
+| GitHub | Free |
+
+Railway's actual usage for this app runs $0.30–$0.50/month. You pay the flat $5 plan minimum.
+
+If Railway lapses: service stops, volume data kept 30 days then deleted. Your code on GitHub is safe forever.
 
 ---
 
 ## 📄 License
 
-MIT License - feel free to use this project for personal or commercial purposes!
+MIT — free to use for personal or commercial projects.
 
 ---
 
 ## 💖 Credits
 
-Built with ❤️ by **Tejas.algo**
+Built and extended by **[@tekno_buddy](https://instagram.com/tekno_buddy)**
+
+Originally forked from [TejasAdhiya/CommentDMAutomation](https://github.com/TejasAdhiya/CommentDMAutomation) — extended with multiple keywords, reply-to-all mode, auto token refresh, persistent volume storage, follow button, character counter, theme toggle, and more.
 
 ---
 
-<div align="center">
+⭐ **Star this repo if it helped you!**
 
-**⭐ Star this repo if you found it helpful!**
-
-Made with 🔥 and ☕
-
-</div>
+By [@tekno_buddy](https://instagram.com/tekno_buddy)
