@@ -44,28 +44,36 @@ def update_reel_config(media_id: str, new_config: dict):
 
 TOKEN_FILE = os.path.join(DATA_DIR, "ig_token.json")
 
+def _env_hash():
+    import hashlib
+    from config import INSTAGRAM_ACCESS_TOKEN
+    return hashlib.sha256((INSTAGRAM_ACCESS_TOKEN or "").encode()).hexdigest()[:16]
+
 def get_current_token():
     """
-    Returns the most recently saved Instagram access token.
-    Falls back to the environment variable if no saved token exists yet.
+    Returns the most recently saved (auto-refreshed) Instagram access token.
+    If a NEW token was pasted into INSTAGRAM_ACCESS_TOKEN since then (e.g. after Instagram reset the login),
+    the new one wins; otherwise a dead saved token would block the tool forever (fix 20 Nov 2026).
     """
+    from config import INSTAGRAM_ACCESS_TOKEN
     if os.path.exists(TOKEN_FILE):
         with open(TOKEN_FILE, "r") as f:
             data = json.load(f)
+        if not INSTAGRAM_ACCESS_TOKEN or data.get("src") == _env_hash():
             return data.get("access_token")
-    from config import INSTAGRAM_ACCESS_TOKEN
     return INSTAGRAM_ACCESS_TOKEN
 
 def save_new_token(access_token: str, expires_in: int):
     """
-    Saves a refreshed access token, along with the time it was saved
-    and when it will expire, to the persistent volume.
+    Saves a refreshed access token, along with the time it was saved, when it will expire,
+    and which pasted token it came from, to the persistent volume.
     """
     import time
     data = {
         "access_token": access_token,
         "saved_at": time.time(),
-        "expires_in": expires_in
+        "expires_in": expires_in,
+        "src": _env_hash(),
     }
     with open(TOKEN_FILE, "w") as f:
         json.dump(data, f, indent=2)
