@@ -243,6 +243,9 @@ export default function Dashboard() {
           <span style={{ flex: 1, height: '1px', background: t.line }}></span>
         </div>
 
+        <div style={{ fontSize: '13px', color: t.muted, margin: '-8px 0 16px' }}>
+          Tap a reel to set its keyword, DM, reply and delay (default 2 min, 0 = instant). The switch on each reel turns it on or off.
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px', marginBottom: '48px' }}>
           {reels.map((reel) => (
             <div
@@ -297,6 +300,10 @@ export default function Dashboard() {
                   {(reel.config.trigger_keywords || []).length === 0 && (
                     <span style={{ fontSize: '12px', color: t.muted }}>No keyword set</span>
                   )}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '12px', color: t.muted }}>
+                  <span title="Wait before the reply and DM">⏱ {(() => { const d = reel.config.delay_set ? (reel.config.delay_seconds ?? 120) : 120; return d === 0 ? 'Instant' : d % 60 === 0 ? `${d / 60} min delay` : `${d} s delay` })()}</span>
+                  <span style={{ color: t.accent, fontWeight: 600 }}>Edit ✎</span>
                 </div>
               </div>
             </div>
