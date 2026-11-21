@@ -60,7 +60,7 @@ export default function Dashboard() {
     dm_message: '',
     comment_reply: '',
     active: true,
-    delay_seconds: 120,
+    delay_seconds: 60,
     show_follow_button: true,
     reply_to_all: false,
   })
@@ -101,7 +101,7 @@ export default function Dashboard() {
       dm_message: reel.config.dm_message || '',
       comment_reply: reel.config.comment_reply || '',
       active: reel.config.active ?? false,
-      delay_seconds: reel.config.delay_set ? (reel.config.delay_seconds ?? 120) : 120,
+      delay_seconds: reel.config.delay_set ? (reel.config.delay_seconds ?? 60) : 60,
       show_follow_button: reel.config.show_follow_button ?? true,
       reply_to_all: reel.config.reply_to_all ?? false,
     })
@@ -153,7 +153,7 @@ export default function Dashboard() {
       dm_message: reel.config.dm_message || '',
       comment_reply: reel.config.comment_reply || '',
       active: !reel.config.active,
-      delay_seconds: reel.config.delay_seconds ?? 120,
+      delay_seconds: reel.config.delay_seconds ?? 60,
       delay_set: reel.config.delay_set ?? false,
       show_follow_button: reel.config.show_follow_button ?? true,
       reply_to_all: reel.config.reply_to_all ?? false,
@@ -244,7 +244,7 @@ export default function Dashboard() {
         </div>
 
         <div style={{ fontSize: '13px', color: t.muted, margin: '-8px 0 16px' }}>
-          Tap a reel to set its keyword, DM, reply and delay (default 2 min, 0 = instant). The switch on each reel turns it on or off.
+          Tap a reel to set its keyword, DM, reply and delay (default 1 min, 0 = instant). The switch on each reel turns it on or off.
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px', marginBottom: '48px' }}>
           {reels.map((reel) => (
@@ -302,7 +302,7 @@ export default function Dashboard() {
                   )}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '12px', color: t.muted }}>
-                  <span title="Wait before the reply and DM">⏱ {(() => { const d = reel.config.delay_set ? (reel.config.delay_seconds ?? 120) : 120; return d === 0 ? 'Instant' : d % 60 === 0 ? `${d / 60} min delay` : `${d} s delay` })()}</span>
+                  <span title="Wait before the reply and DM">⏱ {(() => { const d = reel.config.delay_set ? (reel.config.delay_seconds ?? 60) : 60; return d === 0 ? 'Instant' : d % 60 === 0 ? `${d / 60} min delay` : `${d} s delay` })()}</span>
                   <span style={{ color: t.accent, fontWeight: 600 }}>Edit ✎</span>
                 </div>
               </div>
@@ -381,10 +381,10 @@ export default function Dashboard() {
                     const val = e.target.value
                     setFormData({ ...formData, delay_seconds: val === '' ? 0 : Math.max(0, parseInt(val) || 0) })
                   }}
-                  placeholder="120"
+                  placeholder="60"
                   style={{ width: '100%', border: `1px solid ${t.line}`, borderRadius: '8px', padding: '11px 13px', fontFamily: 'Inter, sans-serif', fontSize: '14px', background: t.bg, color: t.ink, boxSizing: 'border-box' }}
                 />
-                <div style={{ fontSize: '12px', color: t.muted, marginTop: '6px' }}>How long to wait before sending the reply and DM. Default 120 (2 minutes, looks human). 0 sends instantly.</div>
+                <div style={{ fontSize: '12px', color: t.muted, marginTop: '6px' }}>How long to wait before sending the reply and DM. Default 60 (1 minute). 0 sends instantly.</div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', background: t.bg, borderRadius: '8px', marginBottom: '12px' }}>

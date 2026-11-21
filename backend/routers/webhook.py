@@ -106,7 +106,7 @@ async def handle_webhook(request: Request):
                     print(f"📣 Reply-to-all mode ON — firing for every comment")
                     dm_message = config.get("dm_message", "")
                     comment_reply = config.get("comment_reply", "")
-                    delay_seconds = config.get("delay_seconds", 120) if config.get("delay_set") else 120  # owner 20 Nov 2026: default 2 minutes; a delay he set himself (0 = instant) is used as is
+                    delay_seconds = config.get("delay_seconds", 60) if config.get("delay_set") else 60  # owner 20 Nov 2026: default 2 minutes; a delay he set himself (0 = instant) is used as is
                     show_follow_button = config.get("show_follow_button", True)
                     asyncio.create_task(
                         send_after_delay(comment_id, dm_message, comment_reply, delay_seconds, show_follow_button, commenter_name)
@@ -123,7 +123,7 @@ async def handle_webhook(request: Request):
                         print(f"✅ TRIGGER MATCHED: '{matched}'")
                         dm_message = config.get("dm_message", "")
                         comment_reply = config.get("comment_reply", "")
-                        delay_seconds = config.get("delay_seconds", 120) if config.get("delay_set") else 120  # owner 20 Nov 2026: default 2 minutes; a delay he set himself (0 = instant) is used as is
+                        delay_seconds = config.get("delay_seconds", 60) if config.get("delay_set") else 60  # owner 20 Nov 2026: default 2 minutes; a delay he set himself (0 = instant) is used as is
                         show_follow_button = config.get("show_follow_button", True)
                         asyncio.create_task(
                             send_after_delay(comment_id, dm_message, comment_reply, delay_seconds, show_follow_button, commenter_name)
