@@ -12,6 +12,7 @@ interface ReelConfig {
   comment_reply: string
   active: boolean
   delay_seconds: number
+  delay_set?: boolean
   show_follow_button: boolean
   reply_to_all: boolean
 }
@@ -59,7 +60,7 @@ export default function Dashboard() {
     dm_message: '',
     comment_reply: '',
     active: true,
-    delay_seconds: 0,
+    delay_seconds: 120,
     show_follow_button: true,
     reply_to_all: false,
   })
@@ -100,7 +101,7 @@ export default function Dashboard() {
       dm_message: reel.config.dm_message || '',
       comment_reply: reel.config.comment_reply || '',
       active: reel.config.active ?? false,
-      delay_seconds: reel.config.delay_seconds || 0,
+      delay_seconds: reel.config.delay_set ? (reel.config.delay_seconds ?? 120) : 120,
       show_follow_button: reel.config.show_follow_button ?? true,
       reply_to_all: reel.config.reply_to_all ?? false,
     })
@@ -134,7 +135,7 @@ export default function Dashboard() {
   const handleSave = async () => {
     if (!editingReel) return
     try {
-      await axios.put(`${API_URL}/api/reels/${editingReel.id}`, formData)
+      await axios.put(`${API_URL}/api/reels/${editingReel.id}`, { ...formData, delay_set: true })
       await fetchData()
       closeModal()
     } catch (error) {
@@ -152,7 +153,8 @@ export default function Dashboard() {
       dm_message: reel.config.dm_message || '',
       comment_reply: reel.config.comment_reply || '',
       active: !reel.config.active,
-      delay_seconds: reel.config.delay_seconds || 0,
+      delay_seconds: reel.config.delay_seconds ?? 120,
+      delay_set: reel.config.delay_set ?? false,
       show_follow_button: reel.config.show_follow_button ?? true,
       reply_to_all: reel.config.reply_to_all ?? false,
     }
@@ -367,15 +369,15 @@ export default function Dashboard() {
                 <input
                   type="number"
                   min={0}
-                  value={formData.delay_seconds === 0 ? '' : formData.delay_seconds}
+                  value={formData.delay_seconds}
                   onChange={(e) => {
                     const val = e.target.value
-                    setFormData({ ...formData, delay_seconds: val === '' ? 0 : parseInt(val) || 0 })
+                    setFormData({ ...formData, delay_seconds: val === '' ? 0 : Math.max(0, parseInt(val) || 0) })
                   }}
-                  placeholder="0"
+                  placeholder="120"
                   style={{ width: '100%', border: `1px solid ${t.line}`, borderRadius: '8px', padding: '11px 13px', fontFamily: 'Inter, sans-serif', fontSize: '14px', background: t.bg, color: t.ink, boxSizing: 'border-box' }}
                 />
-                <div style={{ fontSize: '12px', color: t.muted, marginTop: '6px' }}>How long to wait before sending the reply and DM. 0 sends instantly.</div>
+                <div style={{ fontSize: '12px', color: t.muted, marginTop: '6px' }}>How long to wait before sending the reply and DM. Default 120 (2 minutes, looks human). 0 sends instantly.</div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', background: t.bg, borderRadius: '8px', marginBottom: '12px' }}>

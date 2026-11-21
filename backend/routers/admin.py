@@ -10,7 +10,8 @@ class ReelConfigUpdate(BaseModel):
     dm_message: str
     comment_reply: str
     active: bool
-    delay_seconds: int = 0
+    delay_seconds: int = 120
+    delay_set: bool = False  # True once he saved a delay himself; older reels (saved with the old 0 default) wait 120 s
     show_follow_button: bool = True
     reply_to_all: bool = False
 
